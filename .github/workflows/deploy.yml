@@ -1,0 +1,44 @@
+name: Publicar BarberOS Pro
+
+on:
+  push:
+    branches: [main]
+  workflow_dispatch:
+
+permissions:
+  contents: read
+  pages: write
+  id-token: write
+
+concurrency:
+  group: github-pages
+  cancel-in-progress: false
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Descargar el repositorio
+        uses: actions/checkout@v4
+      - name: Preparar Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: 22
+      - name: Instalar dependencias
+        run: npm install
+        working-directory: barberos-pro
+      - name: Compilar la aplicación
+        run: npm run build
+        working-directory: barberos-pro
+        env:
+          VITE_SUPABASE_URL: ${{ vars.VITE_SUPABASE_URL }}
+          VITE_SUPABASE_PUBLISHABLE_KEY: ${{ vars.VITE_SUPABASE_PUBLISHABLE_KEY }}
+      - name: Configurar GitHub Pages
+        uses: actions/configure-pages@v5
+      - name: Preparar sitio
+        uses: actions/upload-pages-artifact@v3
+        with:
+          path: barberos-pro/dist
+      - name: Publicar sitio
+        id: deployment
+        uses: actions/deploy-pages@v4

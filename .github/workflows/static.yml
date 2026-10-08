@@ -1,0 +1,11 @@
+name: Flujo antiguo de Pages (desactivado)
+
+on:
+  workflow_dispatch:
+
+jobs:
+  desactivado:
+    if: ${{ false }}
+    runs-on: ubuntu-latest
+    steps:
+      - run: echo "Usa el flujo deploy.yml para publicar BarberOS Pro."
